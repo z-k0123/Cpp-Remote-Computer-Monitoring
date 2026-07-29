@@ -67,3 +67,11 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# codeblocks
+*.layout
+*.depend
+*.cbTemp
+*.o
+*.obj
+bin/
