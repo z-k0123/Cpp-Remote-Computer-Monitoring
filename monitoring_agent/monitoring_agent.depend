@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1784890542 source:c:\users\excalibur\documents\c_cpp_projects\pc_takip\monitoring_agent\monitoring_agent.cpp
+	<windows.h>
+	<iostream>
+	"RamMonitor.h"
+
+1784889573 c:\users\excalibur\documents\c_cpp_projects\pc_takip\monitoring_agent\rammonitor.h
+	<windows.h>
+
+1785224461 source:c:\users\excalibur\documents\c_cpp_projects\pc_takip\monitoring_agent\main.cpp
+	"SystemMonitor.h"
+	<iostream>
+	<windows.h>
+	<cstdint>
+	<iomanip>
+
+1785224503 source:c:\users\excalibur\documents\c_cpp_projects\pc_takip\monitoring_agent\systemmonitor.cpp
+	<windows.h>
+	<fileapi.h>
+	<pdh.h>
+	<cstdint>
+	<cmath>
+	"SystemMonitor.h"
+
+1785223894 c:\users\excalibur\documents\c_cpp_projects\pc_takip\monitoring_agent\systemmonitor.h
+	<windows.h>
+	<cstdint>
+

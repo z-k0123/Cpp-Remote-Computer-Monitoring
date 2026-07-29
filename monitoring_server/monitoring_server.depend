@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1785238071 source:c:\users\excalibur\documents\c_cpp_projects\pc_takip\monitoring_server\main.cpp
+	<iostream>
+	<string>
+	<map>
+	<thread>
+	<mutex>
+	<ctime>
+	<iomanip>
+	<winsock2.h>
+	<ws2tcpip.h>
+	"NetworkPacket.h"
+
+1785239736 c:\users\excalibur\documents\c_cpp_projects\pc_takip\monitoring_server\networkpacket.h
+
