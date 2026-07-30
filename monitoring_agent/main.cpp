@@ -1,6 +1,7 @@
 #include "SystemMonitor.h"
 #include "NetworkClient.h"
 #include <iostream>
+#include <winsock2.h>
 #include <windows.h>
 #include <cstdint>
 #include <iomanip>
