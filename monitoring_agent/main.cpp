@@ -1,46 +1,48 @@
 #include "SystemMonitor.h"
+#include "NetworkClient.h"
 #include <iostream>
 #include <windows.h>
 #include <cstdint>
 #include <iomanip>
+#include <thread>
+#include <ctime>
+#define HOSTNAME_LEN 32
+
 
 int main() {
-    system("cls");
-    system("color 1F");
-    ShowCursor(false);
-    while (GetAsyncKeyState(VK_ESCAPE)==0) {
-        wipe();
 
-        unsigned int currentRAM = ramusage();
-        unsigned int currentDisk = diskusage();
-        int  currentCPU = cpuusage();
+    SOCKET clientSocket = INVALID_SOCKET;
 
+    std::cout << "Sunucuya baglanmaya calisiliyor..." << std::endl;
 
-        std::cout << "=========================================" << '\n';
-        std::cout << "        WINDOWS CANLI MONITORU           " << '\n';
-        std::cout << "=========================================" << '\n';
-
-        std::cout << " CPU Kullanimi : %" << currentCPU << "         " << '\n';
-        std::cout << " RAM Kullanimi : %" << currentRAM << "         " << '\n';
-        std::cout << " Disk Kullanimi : %" << currentDisk << "         " << '\n';
-        std::cout << "=========================================" << '\n';
-        std::cout << " Cikmak icin esc basin.               " << '\n';
-
-        // 1000 ms uykuyu 20 x 50 ms parçalara bölüyoruz
-        for (int i = 0; i < 20; ++i) {
-            // ESC'ye basýldýðý an 1 saniyenin dolmasýný bekleme!
-            if (GetAsyncKeyState(VK_ESCAPE)) {
-                return -1.0; // ESC'ye basýldýðýný temsil eden özel bir deðer döndür
-            }
-        Sleep(50);
-
-        if (currentCPU < 0) {
-            break;
-        }
-}
-
+    // Sunucu IP ve Port bilgisi
+    if (!connectToServer(clientSocket, "127.0.0.1", 8888)) {
+        std::cerr << "Baglanti basarisiz. Program kapatiliyor." << std::endl;
+        Sleep(2000);
+        return 1;
     }
-    ShowCursor(true);
 
-    return 0;
+    std::cout << "Sunucuya basariyla baglanildi!" << std::endl;
+
+    while (true) {
+        AgentData packet{};  // {} ile sifirla, cop veri kalmasin
+
+        char hostname[HOSTNAME_LEN];
+        DWORD size = sizeof(hostname);
+        GetComputerNameA(hostname, &size);
+        strncpy_s(packet.hostname, hostname, sizeof(packet.hostname) - 1);
+
+        packet.ram_usage = ramusage();
+        packet.cpu_usage = cpuusage();
+      //  packet.disk_activity = 0;
+
+        sendData(clientSocket, packet);
+
+
+                // 1 saniye bekleme
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+
+            cleanupSocket(clientSocket);
+            return 0;
 }

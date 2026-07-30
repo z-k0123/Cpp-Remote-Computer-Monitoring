@@ -105,5 +105,3 @@ void SetColor(int textColor, int bgColor)
     SetConsoleTextAttribute(hConsole,
                             (bgColor << 4) | textColor);
 }
-
-void sendData(const char* serverIP, int PORT);

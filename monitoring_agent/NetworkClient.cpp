@@ -47,7 +47,7 @@ bool sendData(SOCKET clientSocket, const AgentData& packet){
 
 void cleanupSocket(SOCKET clientSocket){
     if(clientSocket != INVALID_SOCKET){
-        closesocket(clientsocket);
+        closesocket(clientSocket);
     }
     WSACleanup();
 }
