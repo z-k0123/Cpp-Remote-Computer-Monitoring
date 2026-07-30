@@ -3,7 +3,7 @@
 
 // outgoing packet
 struct AgentData {
-    std::string hostname;
+    char hostname[32];
     int cpu_usage;
     int ram_usage;
 //  int disk_activity;

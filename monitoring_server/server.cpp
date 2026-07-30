@@ -27,7 +27,7 @@ void networkListener() {
     serverAddr.sin_port = htons(PORT);        // change port number to network byte order
     serverAddr.sin_addr.s_addr = INADDR_ANY;  // listen every network interface
 
-    bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     listen(serverSocket, WAITING_QUEUE); // WAITING_QUEUE  default: 10
 
     while (serverOnline) {
