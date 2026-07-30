@@ -1,7 +1,11 @@
 #pragma once
+#include <winsock2.h>
+#include "packet.h"
+#pragma comment(lib, "ws2_32.lib")
 
-bool ConnectToServer();
 
-bool SendMessage(const std::string& message);
+bool connectToServer(SOCKET& clientSocket, const char* ip, int port);
 
-void Disconnect();
+bool sendData(SOCKET clientSocket, const AgentData& packet);
+
+void cleanupSocket(SOCKET clientSocket);

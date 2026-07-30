@@ -1,10 +1,13 @@
 #pragma once
 #include <string>
 
-// outgoing packet
+
+#pragma pack(push, 1)
 struct AgentData {
-    char hostname[32];
+    std::string hostname;
     int cpu_usage;
     int ram_usage;
 //  int disk_activity;
 };
+
+#pragma pack(pop)
