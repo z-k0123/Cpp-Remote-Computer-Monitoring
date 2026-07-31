@@ -35,8 +35,9 @@
 		<Linker>
 			<Add option="-lws2_32" />
 		</Linker>
-		<Unit filename="NetworkPacket.h" />
+		<Unit filename="main.cpp" />
 		<Unit filename="server.cpp" />
+		<Unit filename="server.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

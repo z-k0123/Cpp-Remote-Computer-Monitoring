@@ -1,4 +1,5 @@
 #include "server.h"
+#include "../monitoring_agent/packet.h"
 #include <iostream>
 #include <map>
 #include <thread>
@@ -11,9 +12,35 @@
 #define WAITING_QUEUE 10
 
 
-std::map<std::string, AgentData> agentList;
+std::map<std::string, AgentRecord> agentList;
 std::mutex listLock;
 bool serverOnline = true;
+
+void handleClient(SOCKET clientSocket) {
+    AgentData incomingPacket;
+
+    while (serverOnline) {
+        int bytesReceived = recv(clientSocket, (char*)&incomingPacket, sizeof(AgentData), 0);
+
+        if (bytesReceived <= 0) { break;}
+
+        if (bytesReceived == sizeof(AgentData)) {
+            std::lock_guard<std::mutex> lock(listLock);
+            std::string host(incomingPacket.hostname);
+
+            agentList[host] = AgentRecord{
+                host,
+                incomingPacket.cpu_usage,
+                incomingPacket.ram_usage,
+                time(0),
+                "OK"
+            };
+        }
+    }
+
+    closesocket(clientSocket);  // bu client kesin kopunca kapat
+}
+
 
 // works in seperate thread. listens TCP port. its starting detached to prevent blocking the main thread
 void networkListener() {
@@ -37,27 +64,9 @@ void networkListener() {
         SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddr_size);
 
         if (clientSocket != INVALID_SOCKET) {
-            AgentData incomingPacket;
-
-            int bytesReceived = recv(clientSocket, (char*)&incomingPacket, sizeof(AgentData), 0);
-
-            // check if all of the package is received
-            if (bytesReceived == sizeof(AgentData)) {
-                std::lock_guard<std::mutex> lock(listLock);
-
-                std::string host(incomingPacket.hostname);
-
-                // map[key] = {...}: update or add new hostname
-                agentList[host] = {
-                    host,
-                    incomingPacket.cpu_usage,
-                    incomingPacket.ram_usage,
-                //    0,          // disk_activity - henuz ajan tarafinda yok
-                    time(0),
-                    "OK"
-                };
-            }
-            closesocket(clientSocket);
+            // her client icin ayri bir thread baslat, boylece accept() hemen
+            // bir sonraki client'i beklemeye devam edebilir
+            std::thread(handleClient, clientSocket).detach();
         }
     }
     closesocket(serverSocket);
@@ -87,6 +96,8 @@ void createTable() {
         // set agent OFFLINE if there's no data for 15 secs
         if (timePassed > 15 && agent.status != "OFFLINE") {
             agent.status = "OFFLINE";
+            agent.cpu_usage = 0;
+            agent.ram_usage = 0;
         }
 
         std::string timeText = (timePassed < 2) ? "now" : std::to_string((int)timePassed) + " sn once";
@@ -106,4 +117,3 @@ void createTable() {
     std::cout << "====================================================================================================" << std::endl;
     std::cout << " Sunucu 8888 portundan verileri dinliyor. Cikmak icin ESC..." << std::endl;
 }
-

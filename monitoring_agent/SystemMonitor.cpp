@@ -96,7 +96,12 @@ int diskusage(const char* driver){
 
 }
 
-int DiskActivity(){ return 0; }
+int DiskActivity(){
+    DISK_PERFORMANCE diskperf;
+
+    return 0;
+
+}
 
 // change text color
 void SetColor(int textColor, int bgColor)

@@ -5,7 +5,7 @@
 // incoming packet
 // status info for every agent
 // adding status and and last_update to the network packet
-struct AgentData {
+struct AgentRecord {
     std::string hostname;
     int cpu_usage;
     int ram_usage;

@@ -32,7 +32,7 @@ bool connectToServer(SOCKET& clientSocket, const char* ip, int port){
         WSACleanup();
         return false;
     }
-
+    std::cout << "Connection successful." << std::endl;
     return true;
 }
 

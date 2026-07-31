@@ -17,10 +17,9 @@ int main() {
     std::cout << "Sunucuya baglanmaya calisiliyor..." << std::endl;
 
     // Sunucu IP ve Port bilgisi
-    if (!connectToServer(clientSocket, "127.0.0.1", 8888)) {
-        std::cerr << "Baglanti basarisiz. Program kapatiliyor." << std::endl;
-        Sleep(2000);
-        return 1;
+    while (!connectToServer(clientSocket, "127.0.0.1", 8888)) {
+        std::cerr << "Sunucuya baglanmaya calisiliyor..." << std::endl;
+        Sleep(1000);
     }
 
     std::cout << "Sunucuya basariyla baglanildi!" << std::endl;
@@ -37,13 +36,21 @@ int main() {
         packet.cpu_usage = cpuusage();
       //  packet.disk_activity = 0;
 
-        sendData(clientSocket, packet);
-
-
-                // 1 saniye bekleme
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-            }
-
+        if (!sendData(clientSocket, packet)) {
+            std::cerr << "Baglanti koptu, yeniden baglaniliyor..." << std::endl;
             cleanupSocket(clientSocket);
-            return 0;
+
+            // baglanti kopunca tekrar baglanmayi dene
+            while (!connectToServer(clientSocket, "127.0.0.1", 8888)) {
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+            }
+            continue;
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    cleanupSocket(clientSocket);
+    return 0;
 }
+
