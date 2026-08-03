@@ -7,7 +7,8 @@ struct AgentData {
     char hostname[HOSTNAME_LEN];
     int cpu_usage;
     int ram_usage;
-//  int disk_activity;
+    int disk_usage;
+    float disk_activity;
 };
 
 #pragma pack(pop)

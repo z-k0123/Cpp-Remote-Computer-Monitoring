@@ -4,6 +4,8 @@
 
 int ramusage();
 int  cpuusage();
+float DiskActivity();
+
 int diskusage(const char* driver = "C:\\");
 void wipe();
 void ShowCursor(bool showFlag);

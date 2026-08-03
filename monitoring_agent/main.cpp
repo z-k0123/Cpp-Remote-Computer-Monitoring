@@ -11,21 +11,18 @@
 
 
 int main() {
-
+    DiskActivity();
     SOCKET clientSocket = INVALID_SOCKET;
 
-    std::cout << "Sunucuya baglanmaya calisiliyor..." << std::endl;
-
-    // Sunucu IP ve Port bilgisi
     while (!connectToServer(clientSocket, "127.0.0.1", 8888)) {
-        std::cerr << "Sunucuya baglanmaya calisiliyor..." << std::endl;
+        std::cerr <<  "Trying to connect to the server..." << std::endl;
         Sleep(1000);
     }
 
-    std::cout << "Sunucuya basariyla baglanildi!" << std::endl;
+    std::cout << "Connected to the server!" << std::endl;
 
     while (true) {
-        AgentData packet{};  // {} ile sifirla, cop veri kalmasin
+        AgentData packet{};  // reset packet
 
         char hostname[HOSTNAME_LEN];
         DWORD size = sizeof(hostname);
@@ -34,13 +31,14 @@ int main() {
 
         packet.ram_usage = ramusage();
         packet.cpu_usage = cpuusage();
-      //  packet.disk_activity = 0;
+        packet.disk_activity = DiskActivity();
+        packet.disk_usage = diskusage();
 
         if (!sendData(clientSocket, packet)) {
-            std::cerr << "Baglanti koptu, yeniden baglaniliyor..." << std::endl;
+            std::cerr << "Connection failed, trying again..." << std::endl;
             cleanupSocket(clientSocket);
 
-            // baglanti kopunca tekrar baglanmayi dene
+            // try again if connection fails
             while (!connectToServer(clientSocket, "127.0.0.1", 8888)) {
                 std::this_thread::sleep_for(std::chrono::seconds(2));
             }

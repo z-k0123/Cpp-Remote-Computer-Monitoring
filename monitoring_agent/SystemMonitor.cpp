@@ -3,7 +3,12 @@
 #include <pdh.h>
 #include <cstdint>
 #include <cmath>
+#include <winioctl.h>
+#include <ioapiset.h>
+#include <iostream>
+#include <cmath>
 #include "SystemMonitor.h"
+#include <iomanip>
 
 
 // find ram usage percentage
@@ -96,10 +101,60 @@ int diskusage(const char* driver){
 
 }
 
-int DiskActivity(){
+float DiskActivity(){
     DISK_PERFORMANCE diskperf;
+    HANDLE diskHandle = CreateFile(
+    "\\\\.\\PhysicalDrive0",
+    0,
+    FILE_SHARE_READ | FILE_SHARE_WRITE,
+    NULL,
+    OPEN_EXISTING,
+    0,
+    NULL
+    );
 
-    return 0;
+    DWORD bytesReturned;
+
+    BOOL success = DeviceIoControl(diskHandle,
+    IOCTL_DISK_PERFORMANCE,
+    nullptr,
+    0,
+    &diskperf,
+    sizeof(diskperf),
+    &bytesReturned, // getting BytesWritten value here
+    nullptr
+    );
+
+    if(!success){
+        std::cout << "device io control fail. error: " << GetLastError() << std::endl;
+        CloseHandle(diskHandle);
+    }
+
+    uint64_t disk_write1 = diskperf.BytesWritten.QuadPart;
+    Sleep(1000);
+
+    BOOL success2 = DeviceIoControl(diskHandle,
+    IOCTL_DISK_PERFORMANCE,
+    nullptr,
+    0,
+    &diskperf,
+    sizeof(diskperf),
+    &bytesReturned, // getting BytesWritten value here
+    nullptr
+    );
+
+    if(!success2){
+        std::cout << "device io control fail. error: " << GetLastError() << std::endl;
+        CloseHandle(diskHandle);
+    }
+
+    uint64_t disk_write2 = diskperf.BytesWritten.QuadPart;
+
+    float disk_write = (disk_write2 - disk_write1) / std::pow(2, 20);
+
+    return disk_write;
+
+ // debug  std::cout << "returned bytes: " << std::setprecision(2) << disk_write << " MB/s" << std::endl;
 
 }
 

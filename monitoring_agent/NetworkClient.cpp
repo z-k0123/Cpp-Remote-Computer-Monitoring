@@ -4,7 +4,6 @@
 #include <ws2tcpip.h>
 #include <winsock2.h>
 #include <iostream>
-#pragma comment(lib, "ws2_32.lib")
 
 
 bool connectToServer(SOCKET& clientSocket, const char* ip, int port){

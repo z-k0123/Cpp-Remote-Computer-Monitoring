@@ -32,6 +32,8 @@ void handleClient(SOCKET clientSocket) {
                 host,
                 incomingPacket.cpu_usage,
                 incomingPacket.ram_usage,
+                incomingPacket.disk_activity,
+                incomingPacket.disk_usage,
                 time(0),
                 "OK"
             };
@@ -64,8 +66,7 @@ void networkListener() {
         SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddr_size);
 
         if (clientSocket != INVALID_SOCKET) {
-            // her client icin ayri bir thread baslat, boylece accept() hemen
-            // bir sonraki client'i beklemeye devam edebilir
+            // start another thread for each client
             std::thread(handleClient, clientSocket).detach();
         }
     }
@@ -78,12 +79,12 @@ void createTable() {
 
     std::cout << "====================================================================================================" << std::endl;
     std::cout << std::left
-              << std::setw(18) << " HOSTNAME"
+              << std::setw(18) << "HOSTNAME"
               << std::setw(12) << "CPU"
               << std::setw(12) << "RAM"
-              << std::setw(12) << "DISK"
-              << std::setw(16) << "STATUS"
-              << "LAST UPDATE" << std::endl;
+              << std::setw(12) << "DISK WRITE"
+              << std::setw(12) << "DISK USAGE"
+              << std::setw(16) << "STATUS" << std::endl;
     std::cout << "====================================================================================================" << std::endl;
 
     int totalAgent = agentList.size();
@@ -91,29 +92,30 @@ void createTable() {
     time_t currenttime = time(0);
 
     for (auto& [host, agent] : agentList) {
-        double timePassed = difftime(currenttime, agent.last_update);
+        double timePassed = difftime(currenttime, agent.time_passed);
 
         // set agent OFFLINE if there's no data for 15 secs
         if (timePassed > 15 && agent.status != "OFFLINE") {
             agent.status = "OFFLINE";
             agent.cpu_usage = 0;
             agent.ram_usage = 0;
+            agent.disk_usage = 0;
+            agent.disk_activity = 0;
         }
-
-        std::string timeText = (timePassed < 2) ? "now" : std::to_string((int)timePassed) + " sn once";
 
         std::cout << " " << std::left << std::setw(17) << agent.hostname;
         std::cout << "%" << std::left << std::setw(11) << agent.cpu_usage;
         std::cout << "%" << std::left << std::setw(11) << agent.ram_usage;
+        std::cout << std::left << std::setw(13) << std::setprecision(2) << agent.disk_activity << "MB/s";
+        std::cout << "%" << std::left << std::setw(13) << agent.disk_usage;
         std::cout << std::left << std::setw(16) << agent.status;
-        std::cout << timeText << std::endl;
 
         if (agent.status != "OK") warnings++;
     }
 
     std::cout << "====================================================================================================" << std::endl;
-    std::cout << " Toplam Agent: " << totalAgent << std::endl;
-    std::cout << " Uyari: " << warnings << std::endl;
+    std::cout << " Total Agent: " << totalAgent << std::endl;
+    std::cout << " Warnings: " << warnings << std::endl;
     std::cout << "====================================================================================================" << std::endl;
-    std::cout << " Sunucu 8888 portundan verileri dinliyor. Cikmak icin ESC..." << std::endl;
+    std::cout << " Listening from port 8888. ESC to exit." << std::endl;
 }

@@ -9,8 +9,9 @@ struct AgentRecord {
     std::string hostname;
     int cpu_usage;
     int ram_usage;
-//  int disk_activity;
-    time_t last_update;
+    float disk_activity;
+    int disk_usage;
+    time_t time_passed;
     std::string status;
 };
 
