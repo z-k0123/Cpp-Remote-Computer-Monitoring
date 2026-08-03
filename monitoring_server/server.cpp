@@ -106,7 +106,8 @@ void createTable() {
         std::cout << " " << std::left << std::setw(17) << agent.hostname;
         std::cout << "%" << std::left << std::setw(11) << agent.cpu_usage;
         std::cout << "%" << std::left << std::setw(11) << agent.ram_usage;
-        std::cout << std::left << std::setw(13) << std::setprecision(2) << agent.disk_activity << "MB/s";
+        std::cout << std::left << std::fixed << std::setprecision(2) << agent.disk_activity << " MB/s";
+        std::cout << std::setw(5) << "";
         std::cout << "%" << std::left << std::setw(13) << agent.disk_usage;
         std::cout << std::left << std::setw(16) << agent.status;
 
