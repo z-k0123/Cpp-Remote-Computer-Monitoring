@@ -82,8 +82,8 @@ void createTable() {
               << std::setw(18) << "HOSTNAME"
               << std::setw(12) << "CPU"
               << std::setw(12) << "RAM"
-              << std::setw(12) << "DISK WRITE"
-              << std::setw(12) << "DISK USAGE"
+              << std::setw(15) << "DISK WRITE"
+              << std::setw(15) << "DISK USAGE"
               << std::setw(16) << "STATUS" << std::endl;
     std::cout << "====================================================================================================" << std::endl;
 
@@ -109,14 +109,14 @@ void createTable() {
         std::cout << std::left << std::fixed << std::setprecision(2) << agent.disk_activity << " MB/s";
         std::cout << std::setw(5) << "";
         std::cout << "%" << std::left << std::setw(13) << agent.disk_usage;
-        std::cout << std::left << std::setw(16) << agent.status;
+        std::cout << std::left << std::setw(18) << agent.status;
 
         if (agent.status != "OK") warnings++;
     }
 
-    std::cout << "====================================================================================================" << std::endl;
+    std::cout << "==============================================" << std::endl;
     std::cout << " Total Agent: " << totalAgent << std::endl;
     std::cout << " Warnings: " << warnings << std::endl;
-    std::cout << "====================================================================================================" << std::endl;
+    std::cout << "==============================================" << std::endl;
     std::cout << " Listening from port 8888. ESC to exit." << std::endl;
 }
