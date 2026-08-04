@@ -33,7 +33,7 @@ int main() {
 
     serverOnline = false;
     system("cls");
-    std::cout << "Sunucu kapatildi." << "\n";
+    std::cout << "Server closed." << "\n";
     Sleep(1000);
     return 0;
 }

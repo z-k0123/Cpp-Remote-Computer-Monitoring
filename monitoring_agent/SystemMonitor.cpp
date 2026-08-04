@@ -158,10 +158,3 @@ float DiskActivity(){
 
 }
 
-// change text color
-void SetColor(int textColor, int bgColor)
-{
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole,
-                            (bgColor << 4) | textColor);
-}

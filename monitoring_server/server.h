@@ -18,4 +18,5 @@ struct AgentRecord {
 void networkListener();
 void createTable();
 extern bool serverOnline;
+char changeColor();
 

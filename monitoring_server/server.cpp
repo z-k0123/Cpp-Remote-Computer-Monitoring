@@ -7,14 +7,40 @@
 #include <iomanip>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
 
 #define PORT 8888
 #define WAITING_QUEUE 10
+
+// change according to purpose of the host computers
+#define CPU_CRITICAL 90
+#define CPU_WARNING 60
+
+#define RAM_CRITICAL 90
+#define RAM_WARNING 10
+
+#define DISK_CRITICAL 70
+#define DISK_WARNING 30
+#define DISKSPACE_CRITICAL 90
 
 
 std::map<std::string, AgentRecord> agentList;
 std::mutex listLock;
 bool serverOnline = true;
+
+const char* RESET   = "\033[0m";
+const char* RED     = "\033[31m";
+const char* YELLOW  = "\033[33m";
+
+const char* changeColor(float value, float warning, float critical){
+    if(value >= critical){
+        return RED;
+    }
+    if(value >= warning){
+        return YELLOW;
+    }
+    return RESET;
+}
 
 void handleClient(SOCKET clientSocket) {
     AgentData incomingPacket;
@@ -35,7 +61,7 @@ void handleClient(SOCKET clientSocket) {
                 incomingPacket.disk_activity,
                 incomingPacket.disk_usage,
                 time(0),
-                "OK"
+                "ONLINE"
             };
         }
     }
@@ -88,11 +114,10 @@ void createTable() {
     std::cout << "====================================================================================================" << std::endl;
 
     int totalAgent = agentList.size();
-    int warnings = 0;
     time_t currenttime = time(0);
 
     for (auto& [host, agent] : agentList) {
-        double timePassed = difftime(currenttime, agent.time_passed);
+        int timePassed = difftime(currenttime, agent.time_passed);
 
         // set agent OFFLINE if there's no data for 15 secs
         if (timePassed > 15 && agent.status != "OFFLINE") {
@@ -103,20 +128,20 @@ void createTable() {
             agent.disk_activity = 0;
         }
 
+
         std::cout << " " << std::left << std::setw(17) << agent.hostname;
-        std::cout << "%" << std::left << std::setw(11) << agent.cpu_usage;
-        std::cout << "%" << std::left << std::setw(11) << agent.ram_usage;
-        std::cout << std::left << std::fixed << std::setprecision(2) << agent.disk_activity << " MB/s";
+        std::cout << changeColor(agent.cpu_usage, CPU_WARNING, CPU_CRITICAL) << "%" << std::left << std::setw(11) << agent.cpu_usage << RESET;
+        std::cout << changeColor(agent.ram_usage, RAM_WARNING, RAM_CRITICAL) << "%" << std::left << std::setw(11) << agent.ram_usage << RESET;
+        std::cout << changeColor(agent.disk_activity, DISK_WARNING, DISK_CRITICAL) << std::left << std::fixed << std::setprecision(2) << agent.disk_activity << " MB/s" << RESET;
         std::cout << std::setw(5) << "";
-        std::cout << "%" << std::left << std::setw(13) << agent.disk_usage;
+        std::cout << changeColor(agent.disk_usage, 111, DISK_CRITICAL) << "%" << std::left << std::setw(13) << agent.disk_usage << RESET;
         std::cout << std::left << std::setw(18) << agent.status;
 
-        if (agent.status != "OK") warnings++;
     }
 
     std::cout << "==============================================" << std::endl;
-    std::cout << " Total Agent: " << totalAgent << std::endl;
-    std::cout << " Warnings: " << warnings << std::endl;
-    std::cout << "==============================================" << std::endl;
+    std::cout << " Total Agents: " << totalAgent << std::endl;
     std::cout << " Listening from port 8888. ESC to exit." << std::endl;
 }
+
+
