@@ -15,7 +15,7 @@ int main() {
     std::cout << "==========================================================\n";
     std::cout << "High values may be normal depending on workload.\n";
     std::cout << "Investigate sustained high usage instead of isolated spikes.\n";
-    Sleep(3000);
+    Sleep(5000);
     system("cls"); // clear screen
 
     // start listener thread

@@ -105,7 +105,7 @@ void createTable() {
 
     int totalAgent = agentList.size();
     std::cout << " Total Agents: " << totalAgent << std::endl;
-    std::cout << " Listening from port 8888. ESC to exit." << std::endl;
+    std::cout << " Listening from port " << PORT << ". ESC to exit." << std::endl;
 
     std::cout << "====================================================================================================" << std::endl;
     std::cout << std::left
