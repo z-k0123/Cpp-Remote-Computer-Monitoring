@@ -6,7 +6,7 @@
 
 A lightweight client-server application for monitoring the status of Windows computers over a local network.
 
-This project was developed as a learning project during my IT internship to explore Windows API, multithreading, sockets, and system programming in C++.
+This project was developed as a learning project,  during my IT internship to explore Windows API, multithreading, sockets, and system programming in C++ with the assist of AI.
 
 ---
 ## Screenshots
