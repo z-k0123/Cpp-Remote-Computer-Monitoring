@@ -9,8 +9,13 @@
 #include <ws2tcpip.h>
 #include "server.h"
 
-
 int main() {
+    std::cout << "========================= WARNING ========================\n";
+    std::cout << "Resizing this window may break text formatting and layouts.\n";
+    std::cout << "==========================================================\n";
+    std::cout << "High values may be normal depending on workload.\n";
+    std::cout << "Investigate sustained high usage instead of isolated spikes.\n";
+    Sleep(3000);
     system("cls"); // clear screen
 
     // start listener thread
@@ -18,6 +23,7 @@ int main() {
     listener.detach();
 
     while (!(GetAsyncKeyState(VK_ESCAPE) & 0x8000)) {
+
         HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
         COORD coord = { 0, 0 };
         SetConsoleCursorPosition(hOut, coord);

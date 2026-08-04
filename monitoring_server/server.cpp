@@ -14,10 +14,10 @@
 
 // change according to purpose of the host computers
 #define CPU_CRITICAL 90
-#define CPU_WARNING 60
+#define CPU_WARNING 50
 
 #define RAM_CRITICAL 90
-#define RAM_WARNING 10
+#define RAM_WARNING 70
 
 #define DISK_CRITICAL 70
 #define DISK_WARNING 30
@@ -103,9 +103,13 @@ void networkListener() {
 void createTable() {
     std::lock_guard<std::mutex> lock(listLock); // prevent listener working while creating table
 
+    int totalAgent = agentList.size();
+    std::cout << " Total Agents: " << totalAgent << std::endl;
+    std::cout << " Listening from port 8888. ESC to exit." << std::endl;
+
     std::cout << "====================================================================================================" << std::endl;
     std::cout << std::left
-              << std::setw(18) << "HOSTNAME"
+              << std::setw(18) << " HOSTNAME"
               << std::setw(12) << "CPU"
               << std::setw(12) << "RAM"
               << std::setw(15) << "DISK WRITE"
@@ -113,7 +117,6 @@ void createTable() {
               << std::setw(16) << "STATUS" << std::endl;
     std::cout << "====================================================================================================" << std::endl;
 
-    int totalAgent = agentList.size();
     time_t currenttime = time(0);
 
     for (auto& [host, agent] : agentList) {
@@ -130,18 +133,28 @@ void createTable() {
 
 
         std::cout << " " << std::left << std::setw(17) << agent.hostname;
-        std::cout << changeColor(agent.cpu_usage, CPU_WARNING, CPU_CRITICAL) << "%" << std::left << std::setw(11) << agent.cpu_usage << RESET;
-        std::cout << changeColor(agent.ram_usage, RAM_WARNING, RAM_CRITICAL) << "%" << std::left << std::setw(11) << agent.ram_usage << RESET;
-        std::cout << changeColor(agent.disk_activity, DISK_WARNING, DISK_CRITICAL) << std::left << std::fixed << std::setprecision(2) << agent.disk_activity << " MB/s" << RESET;
-        std::cout << std::setw(5) << "";
-        std::cout << changeColor(agent.disk_usage, 111, DISK_CRITICAL) << "%" << std::left << std::setw(13) << agent.disk_usage << RESET;
-        std::cout << std::left << std::setw(18) << agent.status;
+
+        std::cout << changeColor(agent.cpu_usage, CPU_WARNING, CPU_CRITICAL);
+        std::cout << "%" << std::left << std::setw(11) << agent.cpu_usage;
+        std::cout << RESET;
+
+        std::cout << changeColor(agent.ram_usage, RAM_WARNING, RAM_CRITICAL);
+        std::cout << "%" << std::left << std::setw(11) << agent.ram_usage;
+        std::cout << RESET;
+
+        std::cout << changeColor(agent.disk_activity, DISK_WARNING, DISK_CRITICAL);
+        std::cout << std::fixed << std::setprecision(2) << agent.disk_activity << " MB/s";
+        std::cout << RESET;
+        std::cout << std::setw(9) << "";
+
+        std::cout << changeColor(agent.disk_usage, 111, DISK_CRITICAL);
+        std::cout << "%" << std::left << std::setw(11) << agent.disk_usage;
+        std::cout << RESET;
+
+        std::cout << std::left << std::setw(30) << agent.status;
+        std::cout << "\n";
 
     }
 
-    std::cout << "==============================================" << std::endl;
-    std::cout << " Total Agents: " << totalAgent << std::endl;
-    std::cout << " Listening from port 8888. ESC to exit." << std::endl;
+    std::cout << "====================================================================================================" << std::endl;
 }
-
-
