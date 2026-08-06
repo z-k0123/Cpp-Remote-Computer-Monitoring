@@ -9,9 +9,10 @@ A lightweight client-server application for monitoring the status of Windows com
 This project was developed as a learning project,  during my IT internship to explore Windows API, multithreading, sockets, and system programming in C++ with the assist of AI.
 
 ---
-## Screenshots
+## Server Screenshot
 
-*will be added*
+<img width="1222" height="431" alt="server_ss" src="https://github.com/user-attachments/assets/c98896e7-cf33-4f72-a0b5-87fcc97f7843" />
+
 
 ---
 
