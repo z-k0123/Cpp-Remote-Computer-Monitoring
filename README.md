@@ -1,7 +1,7 @@
 # Remote Computer Monitoring in C++
 ![Language](https://img.shields.io/badge/language-C%2B%2B-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-green)
-![Status](https://img.shields.io/badge/status-In%20Development-orange)
+![Status](https://img.shields.io/badge/status-Completed-orange)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
 
 A lightweight client-server application for monitoring the status of Windows computers over a local network.
